@@ -25,6 +25,10 @@ describe "Nave de carga" {
 		naveLlena.recibirAmenaza()
 		assert.equals(0, naveVacia.carga())
 	}
+	test "propulsar vacia" {
+		naveVacia.propulsar()
+		assert.equals(20000, naveVacia.velocidad())
+	}
 
 }
 
@@ -51,6 +55,22 @@ describe "Nave de pasajeros" {
 
 	test "recibir amenaza" {
 		naveSinPasajeros.recibirAmenaza()
+		assert.that(naveSinPasajeros.alarma())
+	}
+
+	test "propulsar maximo" {
+		naveConPasajeros.propulsar()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+
+	test "preparar para viajar" {
+		naveConPasajeros.prepararParaViajar()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+
+	test "encontrar enemigo" {
+		naveSinPasajeros.encontrarEnemigo()
+		assert.equals(20000, naveSinPasajeros.velocidad())
 		assert.that(naveSinPasajeros.alarma())
 	}
 
@@ -83,5 +103,37 @@ describe "Nave de combate" {
 		naveEnAtaque.recibirAmenaza()
 		assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
 	}
+
+	test "preparar para viajar ataque" {
+		naveEnAtaque.prepararParaViajar()
+		assert.equals(15000, naveEnAtaque.velocidad())
+		assert.equals("Volviendo a la base", naveEnAtaque.ultimoMensaje())
+	}
+
+	test "preparar para viajar reposo" {
+		naveEnReposo.velocidad(0)
+		naveEnReposo.prepararParaViajar()
+		assert.equals(15000, naveEnReposo.velocidad())
+		assert.equals("Saliendo en misión", naveEnReposo.ultimoMensaje())
+		assert.equals( ataque, naveEnReposo.modo())
+	}
+
 }
 
+describe "Nave de residuos" {
+	const nave = new NaveResiduos(carga = 5000, velocidad=10000)
+	const naveDetenida = new NaveResiduos(carga = 5000)
+	test "Recibir amenaza" {
+		nave.recibirAmenaza()
+		assert.equals(0, nave.velocidad())
+		assert.equals(5000, nave.carga() )
+	}
+	
+	test "preparar para viajar" {
+		naveDetenida.prepararParaViajar()
+		assert.equals(15000, naveDetenida.velocidad())
+	}
+
+
+
+}
